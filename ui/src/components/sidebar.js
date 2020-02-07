@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useActive, useCurrentRoute } from 'react-navi';
-import Logo from './icons/logo';
-import { Row, Column, Link, Text, Icon } from './core';
+
+import { Column, Link, Text, Icon } from './core';
 
 const links = [
   {
@@ -87,11 +87,13 @@ const Sidebar = () => {
   return (
     projectSelected && (
       <Column
-        height="calc(100vh - 64px)"
-        width={136}
+        flexDirection={['row', 'row', 'row', 'column']}
+        width={['100%', '100%', '100%', 136]}
         bg="black"
-        alignItems="center"
+        alignItems={['unset', 'unset', 'unset', 'center']}
+        justifyContent={['space-between', 'space-between', 'center', 'unset']}
         flexShrink={0}
+        paddingY={[2, 2, 2, 0]}
         overflow="auto"
       >
         {links.map(({ to, title, icon }) => {
@@ -100,16 +102,26 @@ const Sidebar = () => {
           return (
             <SidebarLink
               href={href}
-              width={120}
-              paddingY={4}
-              marginBottom={2}
+              width={['100%', '100%', '100%', 120]}
+              paddingY={[2, 2, 2, 4]}
+              marginBottom={[0, 0, 0, 2]}
+              marginX={[1, 1, 1, 0]}
               key={title}
-              fontSize={0}
               active={useActive(href, { exact: false })}
             >
               <Column alignItems="center">
-                <Icon icon={icon} color="white" size={24} />
-                <Text marginTop={3}>{title}</Text>
+                <Icon
+                  icon={icon}
+                  color="white"
+                  size={['16px', '16px', '16px', '24px']}
+                />
+                <Text
+                  marginTop={[2, 2, 2, 3]}
+                  display={['none', 'none', 'block']}
+                  fontSize={0}
+                >
+                  {title}
+                </Text>
               </Column>
             </SidebarLink>
           );

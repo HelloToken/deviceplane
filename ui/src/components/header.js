@@ -32,6 +32,7 @@ const Header = ({ children }) => {
       alignSelf="stretch"
       paddingRight={5}
       paddingY={4}
+      flex={0}
       bg="black"
     >
       <Row

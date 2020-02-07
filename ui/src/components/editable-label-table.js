@@ -55,6 +55,7 @@ const EditableLabelTable = ({ data, onAdd, onRemove }) => {
     () => [
       {
         Header: 'Key',
+        accessor: 'key',
         Cell: ({ row: { index, original } }) => (
           <EditableCell
             mode={original.mode === 'edit' ? 'default' : original.mode}
@@ -63,14 +64,14 @@ const EditableLabelTable = ({ data, onAdd, onRemove }) => {
             autoFocus
           />
         ),
-        style: {
-          flex: 3,
+        cellStyle: {
           minHeight: '32px',
           alignItems: 'center',
         },
       },
       {
         Header: 'Value',
+        accessor: 'value',
         Cell: ({ row: { index, original } }) => (
           <EditableCell
             mode={original.mode}
@@ -78,8 +79,7 @@ const EditableLabelTable = ({ data, onAdd, onRemove }) => {
             onChange={e => editLabel(index, 'editedValue', e.target.value)}
           />
         ),
-        style: {
-          flex: 3,
+        cellStyle: {
           alignItems: 'center',
           minHeight: '32px',
         },
@@ -89,7 +89,7 @@ const EditableLabelTable = ({ data, onAdd, onRemove }) => {
         Cell: ({ row: { index, original }, data }) => {
           if (original.mode === 'edit' || original.mode === 'new') {
             return (
-              <Row>
+              <Row justifyContent="flex-end">
                 <Button
                   title={<Icon icon="floppy-disk" size={16} color="primary" />}
                   disabled={
@@ -110,7 +110,7 @@ const EditableLabelTable = ({ data, onAdd, onRemove }) => {
             );
           }
           return (
-            <Row>
+            <Row justifyContent="flex-end">
               <Button
                 title={<Icon icon="edit" size={16} color="primary" />}
                 variant="icon"
@@ -125,9 +125,7 @@ const EditableLabelTable = ({ data, onAdd, onRemove }) => {
             </Row>
           );
         },
-        style: {
-          alignItems: 'center',
-          justifyContent: 'flex-end',
+        cellStyle: {
           minHeight: '32px',
         },
       },

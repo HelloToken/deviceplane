@@ -15,6 +15,10 @@ const Icon = ({ color, icon, alt, size = 16, ...props }) => {
 
   let fillColor = theme.colors[color];
 
+  if (Number.isInteger(size)) {
+    size = `${size}px`;
+  }
+
   if (color.indexOf('.') !== -1) {
     const [a, b] = color.split('.');
     fillColor = theme.colors[a][b];
@@ -24,8 +28,8 @@ const Icon = ({ color, icon, alt, size = 16, ...props }) => {
     <Svg
       alt={alt}
       fill={fillColor}
-      width={`${size}px`}
-      height={`${size}px`}
+      width={size}
+      height={size}
       viewBox="0 0 20 20"
       {...props}
     >

@@ -75,36 +75,33 @@ const Devices = ({ route }) => {
         Header: 'Status',
         accessor: 'status',
         Cell: ({ cell: { value } }) => <DeviceStatus status={value} />,
-        style: {
-          flex: '0 0 72px',
-        },
+        maxWidth: '72px',
       },
       {
         Header: 'Name',
         accessor: 'name',
+        minWidth: '200px',
       },
       {
         Header: 'IP Address',
         accessor: ({ info }) => info.ipAddress || '-',
-        style: {
-          flex: '0 0 130px',
-        },
+        maxWidth: '140px',
       },
       {
         Header: 'OS',
         accessor: ({ info }) => info.osRelease.prettyName || '-',
+        minWidth: '200px',
       },
       {
         Header: 'Labels',
         accessor: 'labels',
         Cell: ({ cell: { value } }) =>
           value ? renderLabels(value, addLabelFilter) : null,
-        style: {
-          flex: 2,
-          overflow: 'hidden',
-        },
+        maxWidth: '1fr',
+        minWidth: '300px',
         cellStyle: {
           marginBottom: '-8px',
+          overflow: 'hidden',
         },
       },
     ],
@@ -236,7 +233,7 @@ const Devices = ({ route }) => {
         size="full"
         left={
           deviceTotal && (
-            <Text color="grays.8" fontWeight={2} fontSize={2} marginTop={1}>
+            <Text color="grays.8" fontWeight={2} fontSize={2}>
               (
               <Text color="white" fontWeight={1} fontSize={1} paddingX={1}>
                 {filterQuery.length
@@ -256,11 +253,11 @@ const Devices = ({ route }) => {
               style={{ position: 'absolute', left: 16 }}
             />
             <Input
+              width="280px"
               bg="black"
-              placeholder="Search devices by name or labels"
+              placeholder="Search by name or labels"
               paddingLeft={7}
               value={searchInput}
-              width="325px"
               onChange={e => setSearchInput(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}

@@ -3,28 +3,43 @@ import { useTable, useSortBy } from 'react-table';
 import styled from 'styled-components';
 import { useLinkProps } from 'react-navi';
 
-import { Column, Row, Icon } from './core';
+import { Box, Row, Grid, Icon } from './core';
 
-const Container = styled(Column)``;
-
-Container.defaultProps = { borderRadius: 1, borderColor: 'white' };
-
-const Cell = styled(Row)`
-  flex: 1 0 0%;
-  min-width: 50px;
-  box-sizing: content-box;
-  padding: 8px 16px;
+const A = styled.a`
+  text-decoration: none;
+  color: unset;
+  flex: 1;
+  margin: -8px -12px;
+  padding: 8px 12px;
 `;
 
-Cell.defaultProps = {
-  overflow: 'hidden',
+const LinkCell = ({ children, href, ...rest }) => {
+  const linkProps = useLinkProps({ href });
+  return (
+    <A {...linkProps} {...rest}>
+      {children}
+    </A>
+  );
 };
 
-const TableRow = styled(Row)`
-  align-items: center;
+const StyledTable = styled(Grid).attrs({ as: 'table' })`
+  width: auto;
+  border-collapse: collapse;
+`;
+
+const TableHead = styled.thead`
+  display: contents;
+`;
+
+const TableBody = styled.tbody`
+  display: contents;
+`;
+
+const TableRow = styled.tr`
   border-bottom: 1px solid ${props => props.theme.colors.grays[1]};
   cursor: ${props => (props.selectable ? 'pointer' : 'default')};
   transition: ${props => props.theme.transitions[0]};
+  display: contents;
 
   &:hover {
     background-color: ${props =>
@@ -34,26 +49,16 @@ const TableRow = styled(Row)`
   }
 `;
 
-const A = styled.a`
-  text-decoration: none;
-  color: unset;
-`;
-
-const LinkRow = ({ children, href, ...rest }) => {
-  const linkProps = useLinkProps({ href });
-  return (
-    <A {...linkProps} {...rest}>
-      {children}
-    </A>
-  );
-};
-
-const Header = styled(Row)`
-  min-height: 50px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+const HeaderCell = styled.th`
+  position: sticky;
+  top: 0;
   text-transform: uppercase;
-  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 16px 12px;
+  text-align: left;
+  color: ${props => props.theme.colors.white};
+  background-color: ${props => props.theme.colors.grays[0]};
 
   & ${Cell} svg {
     transition: fill 200ms;
@@ -64,12 +69,10 @@ const Header = styled(Row)`
   }
 `;
 
-Header.defaultProps = {
-  fontSize: 1,
-  fontWeight: 2,
-  color: 'white',
-  bg: 'grays.0',
-};
+const Cell = styled.td`
+  display: flex;
+  padding: 8px 12px;
+`;
 
 const Table = ({
   columns,
@@ -105,39 +108,51 @@ const Table = ({
   };
 
   return (
-    <Container {...getTableProps()} overflowY="hidden">
-      <Header flex={1}>
-        {headerGroups.map(headerGroup => (
-          <Row flex={1} {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <Cell
+    <StyledTable
+      {...getTableProps()}
+      overflowY="hidden"
+      gridTemplateColumns={columns
+        .map(
+          ({ minWidth = 'min-content', maxWidth = '1fr' }) =>
+            `minmax(${minWidth}, ${maxWidth})`
+        )
+        .join(' ')}
+    >
+      <TableHead>
+        <TableRow>
+          {headerGroups.map(headerGroup =>
+            headerGroup.headers.map(column => (
+              <HeaderCell
                 {...column.getHeaderProps(column.getSortByToggleProps())}
                 title=""
                 style={{
-                  ...column.style,
                   cursor: column.canSort ? 'pointer' : 'default',
-                  alignSelf: 'center',
-                  justifyContent: 'space-between',
                 }}
               >
-                {column.render('Header')}
-                <Row marginLeft={2} alignItems="center">
+                <Row justifyContent="space-between">
+                  {column.render('Header')}
                   {column.isSorted ? (
                     <Icon
                       icon={column.isSortedDesc ? 'chevron-down' : 'chevron-up'}
                       size={14}
                       color="white"
+                      marginLeft={2}
                     />
                   ) : column.canSort ? (
-                    <Icon size={12} icon="expand-all" color="grays.5" />
+                    <Icon
+                      size={12}
+                      icon="expand-all"
+                      color="grays.5"
+                      marginLeft={2}
+                    />
                   ) : null}
                 </Row>
-              </Cell>
-            ))}
-          </Row>
-        ))}
-      </Header>
-      <Column {...getTableBodyProps()} overflowY="auto">
+              </HeaderCell>
+            ))
+          )}
+        </TableRow>
+      </TableHead>
+      <TableBody {...getTableBodyProps()} overflowY="auto">
         {rows.length === 0 && (
           <Row
             justifyContent="center"
@@ -154,16 +169,19 @@ const Table = ({
             <Cell
               {...cell.getCellProps()}
               style={{
-                justifyContent:
-                  isNaN(cell.value) || cell.value === '-'
-                    ? 'flex-start'
-                    : 'flex-end',
-                ...cell.column.style,
+                textAlign:
+                  isNaN(cell.value) || cell.value === '-' ? 'left' : 'right',
                 ...cell.column.cellStyle,
               }}
               overflow={editRow ? 'visible' : 'hidden'}
             >
-              {cell.render('Cell')}
+              {rowHref ? (
+                <LinkCell href={rowHref(row.original)}>
+                  {cell.render('Cell')}
+                </LinkCell>
+              ) : (
+                cell.render('Cell')
+              )}
             </Cell>
           ));
           const tableRow = (
@@ -177,13 +195,10 @@ const Table = ({
               {cells}
             </TableRow>
           );
-          if (rowHref) {
-            return <LinkRow href={rowHref(row.original)}>{tableRow}</LinkRow>;
-          }
           return tableRow;
         })}
-      </Column>
-    </Container>
+      </TableBody>
+    </StyledTable>
   );
 };
 
